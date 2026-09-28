@@ -1,1 +1,137 @@
-# AGM-PORTAL
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGM PORTAL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+        }
+        .menu-item a {
+            display: block;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        .menu-item a:hover {
+            background-color: #2980b9;
+        }
+        /* പുതിയ ഫയൽ ചേർക്കാനുള്ള ബോക്സിനുള്ള സ്റ്റൈൽ */
+        .add-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #ddd;
+        }
+        .add-section h3 {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .add-section input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .add-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .add-btn:hover {
+            background-color: #219653;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>AGM PORTAL</h1>
+        <p>നിങ്ങളുടെ ആവശ്യമായ പേജുകൾ തിരഞ്ഞെടുക്കുക[span_0](start_span)[span_0](end_span):</p>
+        
+        <!-- നിലവിലുള്ള ലിങ്കുകളുടെ പട്ടിക -->
+        <ul class="menu-list" id="menuList">
+            <li class="menu-item"><a href="attendance.html">Attendance (ഹാജർ)</a></li>
+            <li class="menu-item"><a href="വരവ് ചിലവ് മോഡൽ.html">വരവ് ചിലവ് മോഡൽ</a></li>
+            <li class="menu-item"><a href="ഖുർആൻ ടെസ്റ്റ്.html">ഖുർആൻ ടെസ്റ്റ്</a></li>
+            <li class="menu-item"><a href="BHMവൂർഖുർആൻ ടെസ്റ്റ് മാനേജർ.html">BHM വൂർ ഖുർആൻ ടെസ്റ്റ് മാനേജർ</a></li>
+            <li class="menu-item"><a href="MEMS index.html">MEMS Index</a></li>
+            <li class="menu-item"><a href="admin.html">Admin Panel</a></li>
+            <li class="menu-item"><a href="ഹാജർMonthly Ranking.html">ഹാജർ Monthly Ranking</a></li>
+            <li class="menu-item"><a href="മസ്ജിദ്, മദ്രസ വരവ് ചിലവ് കണക്ക്.html">മസ്ജിദ്, മദ്രസ വരവ് ചിലവ് കണക്ക്</a></li>
+            <li class="Menu-item"><a href="BHM WORK CHECKING.html">BHM Work Checking</a></li>
+        </ul>
+
+        <!-- പുതിയ ഫയൽ ചേർക്കാനുള്ള ഫോം -->
+        <div class="add-section">
+            <h3>പുതിയ ഫയൽ ലിങ്ക് ചേർക്കുക</h3>
+            <input type="text" id="fileName" placeholder="ഫയലിന്റെ പേര് (ഉദാ: new-file.html)">
+            <input type="text" id="fileTitle" placeholder="ബട്ടണിൽ കാണിക്കേണ്ട പേര്">
+            <button class="add-btn" onclick="addNewLink()">ലിങ്ക് ചേർക്കുക</button>
+        </div>
+    </div>
+
+    <script>
+        function addNewLink() {
+            var fileName = document.getElementById('fileName').value;
+            var fileTitle = document.getElementById('fileTitle').value;
+
+            if (fileName && fileTitle) {
+                var ul = document.getElementById('menuList');
+                var li = document.createElement('li');
+                li.className = 'menu-item';
+                li.innerHTML = '<a href="' + fileName + '">' + fileTitle + '</a>';
+                ul.appendChild(li);
+
+                // ഇൻപുട്ട് ബോക്സുകൾ ക്ലിയർ ചെയ്യാൻ
+                document.getElementById('fileName').value = '';
+                document.getElementById('fileTitle').value = '';
+            } else {
+                alert('ദയവായി രണ്ട് കോളങ്ങളിലും വിവരങ്ങൾ നൽകുക!');
+            }
+        }
+    </script>
+
+</body>
+</html>
