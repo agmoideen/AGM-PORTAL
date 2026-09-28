@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poroppad Badrul Huda Madrassa - Attendance & Rank</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 10px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #0b5ed7;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        p.sub {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .action-btn {
+            flex: 1;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .action-btn:hover { background-color: #5a6268; }
+        .student-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .student-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-left: 5px solid #ccc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .student-card.present {
+            background: #e8f5e9;
+            border-left-color: #2e7d32;
+        }
+        .student-card.absent {
+            background: #ffebee;
+            border-left-color: #c62828;
+        }
+        .student-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+        }
+        .status-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toggle-btn {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-p { background: #2e7d32; color: white; }
+        .btn-a { background: #c62828; color: white; }
+        .btn-n { background: #ccc; color: #333; }
+
+        .time-input {
+            width: 75px;
+            padding: 4px;
+            font-size: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .group-btn-container {
+            margin-top: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        .group-btn {
+            flex: 1;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .group-btn:hover { background-color: #1ebe5d; }
+        .rank-btn {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .rank-btn:hover { background-color: #e0a800; }
+
+        .log-section {
+            margin-top: 15px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        #outputBox {
+            width: 100%;
+            height: 120px;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 0.9rem;
+            border: 1px solid #25D366;
+            border-radius: 6px;
+            box-sizing: border-box;
+            display: none;
+            background: #f9fff9;
+        }
+        /* Modal for editing students */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+            z-index: 999;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .edit-row {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .edit-row input {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.9rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .add-input-box {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .add-input-box input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .add-btn {
+            background: #0b5ed7;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .close-modal-btn {
+            width: 100%;
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ബദ്‌റുൽഹുദ മദ്റസ - രണ്ടാം ക്ലാസ്സ്</h2>
+    <p class="sub">ഹാജർ, സമയം (സ്റ്റാർട്ടിങ് 6:40 AM) & മാസ റാങ്ക് ലിസ്റ്റ്</p>
+
+    <div class="top-actions">
+        <button class="action-btn" onclick="openEditModal()">✏️ കുട്ടികളുടെ ലിസ്റ്റ് എഡിറ്റ്</button>
+        <button class="action-btn" style="background-color: #dc3545;" onclick="resetData()">🔄 റീസെറ്റ്</button>
+    </div>
+
+    <div class="student-grid" id="studentGrid">
+        <!-- Students will be loaded here -->
+    </div>
+
+    <div class="group-btn-container">
+        <button class="group-btn" onclick="generateReport()">📢 ഹാജർ റിപ്പോർട്ട്</button>
+        <button class="group-btn rank-btn" onclick="generateMonthlyRank()">🏆 മാസ റാങ്ക് (Top 3)</button>
+    </div>
+
+    <div class="log-section" id="logSummary">
+        <p style="color:#888; font-size:0.85rem; text-align:center;">ഇതുവരെ രേഖപ്പെടുത്തിയിട്ടില്ല</p>
+    </div>
+
+    <textarea id="outputBox" placeholder="ഇവിടെ വരുന്ന ടെക്സ്റ്റ് കോപ്പി ചെയ്ത് വാട്സാപ്പിൽ പേസ്റ്റ് ചെയ്യുക..." readonly></textarea>
+</div>
+
+<!-- Modal Window for Editing Students -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h3 style="margin-top:0; color:#0b5ed7;">കുട്ടികളുടെ പേരുകൾ മാറ്റുക / പുതിയത് ചേർക്കുക</h3>
+        
+        <div class="add-input-box">
+            <input type="text" id="newStudentName" placeholder="പുതിയ കുട്ടിയുടെ പേര് എഴുതുക...">
+            <button class="add-btn" onclick="addNewStudent()">ചേർക്കുക</button>
+        </div>
+
+        <div id="editListContainer"></div>
+
+        <button class="close-modal-btn" onclick="closeEditModal()">സേവ് ചെയ്ത് പുറത്തുകടക്കുക</button>
+    </div>
+</div>
+
+<script>
+    const defaultStudents = [
+        { id: 1, name: "BISHRUL HAFI P P", status: "none", time: "06:40" },
+        { id: 2, name: "AYMAN SHUHAIB", status: "none", time: "06:40" },
+        { id: 3, name: "SAFIYULLA.V.P", status: "none", time: "06:40" },
+        { id: 4, name: "MUHAMMED SAFWAN K", status: "none", time: "06:40" },
+        { id: 5, name: "SHAHKIYAN .A", status: "none", time: "06:40" },
+        { id: 6, name: "MOHAMMAD RABEE", status: "none", time: "06:40" },
+        { id: 7, name: "ABDUL HANNAN K P", status: "none", time: "06:40" },
+        { id: 8, name: "RAZIM FAISAL. K", status: "none", time: "06:40" },
+        { id: 9, name: "MUHAMMED MOOSA N.P", status: "none", time: "06:40" },
+        { id: 10, name: "JAZLAAN", status: "none", time: "06:40" },
+        { id: 11, name: "SHAZIN SOUKHA", status: "none", time: "06:40" },
+        { id: 12, name: "MUHAMMED ESHAN", status: "none", time: "06:40" },
+        { id: 13, name: "SAADIA SHAMEEL", status: "none", time: "06:40" },
+        { id: 14, name: "FATHIMATH SHIRIN.M.A", status: "none", time: "06:40" },
+        { id: 15, name: "AYRA MEHRIN .MP", status: "none", time: "06:40" },
+        { id: 16, name: "AYISHA MEHVISH V P", status: "none", time: "06:40" },
+        { id: 17, name: "AYISHA SHAFEEK", status: "none", time: "06:40" },
+        { id: 18, name: "FATHIMA.M", status: "none", time: "06:40" },
+        { id: 19, name: "JANNAH JUNAID", status: "none", time: "06:40" },
+        { id: 20, name: "FARIHA ASHRAF", status: "none", time: "06:40" },
+        { id: 21, name: "FATHIMA HANEEF", status: "none", time: "06:40" },
+        { id: 22, name: "AYISHA HANEEF", status: "none", time: "06:40" },
+        { id: 23, name: "NOURA ABDUL JALEEL", status: "none", time: "06:40" },
+        { id: 24, name: "AYISHA IFRA T M", status: "none", time: "06:40" },
+        { id: 25, name: "FATHIMA SAMAR", status: "none", time: "06:40" },
+        { id: 26, name: "LANA FATHIMA", status: "none", time: "06:40" },
+        { id: 27, name: "SAFIYA AHMAD", status: "none", time: "06:40" }
+    ];
+
+    let students = JSON.parse(localStorage.getItem('madrassa_attendance_rank_v1')) || defaultStudents;
+    let monthlyHistory = JSON.parse(localStorage.getItem('madrassa_monthly_history')) || {}; // 날짜별 기록 저장용
+
+    function saveToStorage() {
+        localStorage.setItem('madrassa_attendance_rank_v1', JSON.stringify(students));
+        localStorage.setItem('madrassa_monthly_history', JSON.stringify(monthlyHistory));
+    }
+
+    function loadStudents() {
+        const grid = document.getElementById("studentGrid");
+        grid.innerHTML = "";
+        
+        students.forEach((student, index) => {
+            let cardClass = "";
+            let btnClass = "btn-n";
+            let btnText = "മാർക്ക് ചെയ്യുക";
+            let timeInputHTML = "";
+
+            if (student.status === "present") {
+                cardClass = "present";
+                btnClass = "btn-p";
+                btnText = "✅ ഹാജർ";
+                timeInputHTML = `<input type="text" class="time-input" value="${student.time || '06:40'}" placeholder="സമയം" oninput="updateTime(${index}, this.value)">`;
+            } else if (student.status === "absent") {
+                cardClass = "absent";
+                btnClass = "btn-a";
+                btnText = "❌ അബ്സെന്റ്";
+            }
+
+            grid.innerHTML += `
+                <div class="student-card ${cardClass}">
+                    <span class="student-name" onclick="toggleStatus(${index})">${index + 1}. ${student.name}</span>
+                    <div class="status-area">
+                        ${timeInputHTML}
+                        <button class="toggle-btn ${btnClass}" onclick="toggleStatus(${index})">${btnText}</button>
+                    </div>
+                </div>
+            `;
+        });
+        updateSummary();
+    }
+
+    function toggleStatus(index) {
+        const student = students[index];
+
+        if (student.status === "none" || !student.status) {
+            student.status = "present";
+            student.time = "06:40"; // ഡിഫോൾട്ട് സ്റ്റാർട്ടിങ് സമയം
+        } else if (student.status === "present") {
+            student.status = "absent";
+            student.time = "";
+        } else {
+            student.status = "none";
+            student.time = "";
+        }
+
+        saveToStorage();
+        loadStudents();
+    }
+
+    function updateTime(index, val) {
+        students[index].time = val;
+        saveToStorage();
+    }
+
+    function updateSummary() {
+        const presentCount = students.filter(s => s.status === "present").length;
+        const absentCount = students.filter(s => s.status === "absent").length;
+        const logSummary = document.getElementById("logSummary");
+        
+        logSummary.innerHTML = `
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold;">
+                <span style="color: #2e7d32;">ഹാജർ: ${presentCount}</span>
+                <span style="color: #c62828;">അബ്സെന്റ്: ${absentCount}</span>
+                <span style="color: #555;">ആകെ: ${students.length}</span>
+            </div>
+        `;
+    }
+
+    function openEditModal() {
+        document.getElementById("editModal").style.display = "flex";
+        renderEditList();
+    }
+
+    function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+        saveToStorage();
+        loadStudents();
+    }
+
+    function renderEditList() {
+        const container = document.getElementById("editListContainer");
+        container.innerHTML = "";
+        
+        students.forEach((student, index) => {
+            container.innerHTML += `
+                <div class="edit-row">
+                    <span style="padding-top:8px; font-weight:bold; width:25px;">${index + 1}.</span>
+                    <input type="text" value="${student.name}" oninput="updateStudentName(${index}, this.value)">
+                    <button class="delete-btn" onclick="deleteStudent(${index})">ഒഴിവാക്കുക</button>
+                </div>
+            `;
+        });
+    }
+
+    function updateStudentName(index, newName) {
+        students[index].name = newName;
+        saveToStorage();
+    }
+
+    function addNewStudent() {
+        const input = document.getElementById("newStudentName");
+        const name = input.value.trim();
+        if(!name) {
+            alert("കുട്ടിയുടെ പേര് എഴുതുക!");
+            return;
+        }
+        students.push({ id: students.length + 1, name: name, status: "none", time: "06:40" });
+        input.value = "";
+        saveToStorage();
+        renderEditList();
+    }
+
+    function deleteStudent(index) {
+        if(confirm("ഈ കുട്ടിയെ ലിസ്റ്റിൽ നിന്ന് ഒഴിവാക്കണമെന്നുറപ്പാണോ?")) {
+            students.splice(index, 1);
+            saveToStorage();
+            renderEditList();
+        }
+    }
+
+    function resetData() {
+        if(confirm("എല്ലാ ഹാജർ വിവരങ്ങളും മാറ്റി ആദ്യത്തെ ലിസ്റ്റിലേക്ക് റീസെറ്റ് ചെയ്യണോ?")) {
+            localStorage.removeItem('madrassa_attendance_rank_v1');
+            students = JSON.parse(JSON.stringify(defaultStudents));
+            loadStudents();
+            alert("റീസെറ്റ് ചെയ്തു!");
+        }
+    }
+
+    function generateReport() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        
+        const daysMalayalam = ['ഞായർ', 'തിങ്കൾ', 'ചൊവ്വ', 'ബുധൻ', 'വ്യാഴം', 'വെള്ളി', 'ശനി'];
+        const dayName = daysMalayalam[now.getDay()];
+        const formattedDate = `${day}/${month}/${year} (${dayName})`;
+
+        // ഇന്നത്തെ ഹാജർ ഹിസ്റ്ററിയിൽ സേവ് ചെയ്യുന്നു (റാങ്കിംഗിനായി)
+        const dateKey = `${year}-${month}-${day}`;
+        monthlyHistory[dateKey] = students.map(s => ({ name: s.name, status: s.status, time: s.time }));
+        saveToStorage();
+
+        let report = `📚 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\nതീയതി: ${formattedDate}\n✨ *രണ്ടാം ക്ലാസ് ഹാജർ വിവരങ്ങൾ (സമയം 6:40 AM):*\n\n`;
+        
+        report += `🟢 *ഹാജരായവർ:* \n`;
+        let pCount = 1;
+        let hasPresent = false;
+        students.forEach((student) => {
+            if (student.status === "present") {
+                let timeStr = student.time ? ` [${student.time}]` : "";
+                report += `${pCount}. ${student.name}${timeStr}\n`;
+                pCount++;
+                hasPresent = true;
+            }
+        });
+        if (!hasPresent) report += `ആരുമില്ല\n`;
+
+        report += `\n🔴 *വരാത്തവർ (Absent):* \n`;
+        let aCount = 1;
+        let hasAbsent = false;
+        students.forEach((student) => {
+            if (student.status === "absent") {
+                report += `${aCount}. ${student.name}\n`;
+                aCount++;
+                hasAbsent = true;
+            }
+        });
+        if (!hasAbsent) report += `ആരുമില്ല\n`;
+
+        const totalPresent = pCount - 1;
+        const totalAbsent = aCount - 1;
+        report += `\n📊 ആകെ ഹാജർ: ${totalPresent} | അബ്സെന്റ്: ${totalAbsent}`;
+
+        const outputBox = document.getElementById("outputBox");
+        outputBox.style.display = "block";
+        outputBox.value = report;
+        outputBox.select();
+
+        try {
+            navigator.clipboard.writeText(report);
+            alert("ഹാജർ വിവരങ്ങൾ കോപ്പി ചെയ്തു!");
+        } catch (err) {
+            alert("താഴെ കാണുന്ന ബോക്സിൽ നിന്ന് ടെക്സ്റ്റ് കോപ്പി ചെയ്യുക.");
+        }
+    }
+
+    // കൃത്യസമയത്ത് (<= 6:40) എത്തിയതിന്റെ അടിസ്ഥാനത്തിൽ Top 3 കണ്ടെത്തുന്നു
+    function generateMonthlyRank() {
+        let scores = {};
+        students.forEach(s => scores[s.name] = 0);
+
+        // സേവ് ചെയ്ത എല്ലാ ദിവസത്തെയും ഡാറ്റ പരിശോധിക്കുന്നു
+        for (let date in monthlyHistory) {
+            monthlyHistory[date].forEach(record => {
+                if (record.status === "present" && record.time) {
+                    // സമയം താരതമ്യം ചെയ്യുന്നു (06:40 അല്ലെങ്കിൽ അതിനുമുമ്പ്)
+                    if (record.time <= "06:40") {
+                        if (scores[record.name] !== undefined) {
+                            scores[record.name] += 1;
+                        }
+                    }
+                }
+            });
+        }
+
+        // പോയിന്റ് അടിസ്ഥാനത്തിൽ സോർട്ട് ചെയ്യുന്നു
+        let sortedStudents = Object.keys(scores).map(name => ({
+            name: name,
+            score: scores[name]
+        })).sort((a, b) => b.score - a.score);
+
+        let report = `🏆 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\n*ഹരിത ഹാജർ & കൃത്യസമയ (06:40 AM) റാങ്ക് ലിസ്റ്റ്* 🌟\n\n`;
+        
+        for (let i = 0; i < Math.min(3, sortedStudents.length); i++) {
+            let medal = i === 0 ? "🥇 ഒന്നാം സ്ഥാനം" : (i === 1 ? "🥈 രണ്ടാം സ്ഥാനം" : "🥉 മൂന്നാം സ്ഥാനം");
+            report += `${medal}: *${sortedStudents[i].name}* (${sortedStudents[i].score} ദിവസങ്ങളിൽ കൃത്യസമയത്ത്)\n`;
+        }
+
+        const outputBox = document.getElementById("outputBox");
+        outputBox.style.display = "block";
+        outputBox.value = report;
+        outputBox.select();
+
+        try {
+            navigator.clipboard.writeText(report);
+            alert("മാസ റാങ്ക് റിപ്പോർട്ട് കോപ്പി ചെയ്തു!");
+        } catch (err) {
+            alert("താഴെ കാണുന്ന ബോക്സിൽ നിന്ന് ടെക്സ്റ്റ് കോപ്പി ചെയ്യുക.");
+        }
+    }
+
+    window.onload = loadStudents;
+</script>
+
+</body>
+</html>
