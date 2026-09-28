@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ബദ്‌റുൽഹുദ മദ്റസ - ഖുർആൻ ടെസ്റ്റ് മാനേജർ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 10px;
+            color: #333;
+        }
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #0b5ed7;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        p.sub {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .month-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e9ecef;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        .month-selector select {
+            padding: 6px;
+            font-size: 0.95rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .action-btn {
+            flex: 1;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .action-btn:hover { background-color: #0b5ed7; }
+        .student-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .student-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-left: 5px solid #0b5ed7;
+            padding: 10px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .student-card.tested-today {
+            background: #e8f5e9;
+            border-left-color: #198754;
+        }
+        .student-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+            flex: 1;
+        }
+        .action-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mark-input {
+            width: 50px;
+            padding: 5px;
+            font-size: 0.85rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .save-btn {
+            background-color: #198754;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .save-btn:hover { background-color: #157347; }
+        
+        .report-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .report-btn {
+            flex: 1;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .report-btn:hover { background-color: #1ebe5d; }
+        .monthly-report-btn {
+            background-color: #6f42c1;
+        }
+        .monthly-report-btn:hover { background-color: #5a32a3; }
+
+        .log-section {
+            margin-top: 15px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        #outputBox {
+            width: 100%;
+            height: 130px;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 0.9rem;
+            border: 1px solid #25D366;
+            border-radius: 6px;
+            box-sizing: border-box;
+            display: none;
+            background: #f9fff9;
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+            z-index: 999;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .edit-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        .edit-top {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .edit-top input[type="text"] {
+            flex: 1;
+            padding: 6px;
+            font-size: 0.85rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .attempts-container {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #555;
+        }
+        .attempt-box {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: #fff;
+            padding: 3px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .attempt-box input {
+            width: 40px;
+            padding: 3px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .add-input-box {
+            display: flex;
+            gap: 5px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        .add-input-box input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .add-btn {
+            background: #0b5ed7;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .close-modal-btn {
+            width: 100%;
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ബദ്‌റുൽഹുദ മദ്റസ - ഖുർആൻ ടെസ്റ്റ്</h2>
+    <p class="sub">ഇന്നത്തെ റിപ്പോർട്ടും മാസാവസാന റിപ്പോർട്ടും വെവ്വേറെ അയക്കാം</p>
+
+    <div class="month-selector">
+        <span>📅 മാസം തിരഞ്ഞെടുക്കുക:</span>
+        <select id="currentMonthSelect" onchange="changeMonth()">
+            <option value="ജനുവരി">ജനുവരി</option>
+            <option value="ഫെബ്രുവരി">ഫെബ്രുവരി</option>
+            <option value="മാർച്ച്">മാർച്ച്</option>
+            <option value="ഏപ്രിൽ">ഏപ്രിൽ</option>
+            <option value="മെയ്">മെയ്</option>
+            <option value="ജൂൺ">ജൂൺ</option>
+            <option value="ജൂലൈ">ജൂലൈ</option>
+            <option value="ഓഗസ്റ്റ്">ഓഗസ്റ്റ്</option>
+            <option value="സെപ്റ്റംബർ" selected>സെപ്റ്റംബർ</option>
+            <option value="ഒക്ടോബർ">ഒക്ടോബർ</option>
+            <option value="നവംബർ">നവംബർ</option>
+            <option value="ഡിസംബർ">ഡിസംബർ</option>
+        </select>
+    </div>
+
+    <div class="top-actions">
+        <button class="action-btn" onclick="openEditModal()">✏️ കുട്ടികളുടെ ലിസ്റ്റും മാർക്കും ക്രമീകരിക്കാൻ</button>
+        <button class="action-btn" style="background-color: #dc3545;" onclick="resetMonthlyData()">🔄 ഈ മാസത്തെ ഡാറ്റ ക്ലിയർ ചെയ്യുക</button>
+    </div>
+
+    <div class="student-grid" id="studentGrid">
+        <!-- Students loaded here -->
+    </div>
+
+    <div class="report-buttons">
+        <button class="report-btn" onclick="generateDailyReport()">📢 ഇന്നത്തെ റിപ്പോർട്ട് കോപ്പി ചെയ്യുക</button>
+        <button class="report-btn monthly-report-btn" onclick="generateMonthlyReport()">📊 മാസത്തെ മൊത്തം റിപ്പോർട്ട്</button>
+    </div>
+
+    <div class="log-section" id="logSummary">
+        <p style="color:#888; font-size:0.85rem; text-align:center;">മാർക്കുകൾ രേഖപ്പെടുത്തി സേവ് ചെയ്യുക</p>
+    </div>
+
+    <textarea id="outputBox" placeholder="ഇവിടെ വരുന്ന ടെക്സ്റ്റ് കോപ്പി ചെയ്ത് വാട്സാപ്പിൽ പേസ്റ്റ് ചെയ്യുക..." readonly></textarea>
+</div>
+
+<!-- Modal Window for Editing Students & Marks -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h3 style="margin-top:0; color:#0b5ed7;">പേരും ഓരോ തവണയും കിട്ടിയ മാർക്കുകളും തിരുത്താം</h3>
+        <p style="font-size:0.8rem; color:#666;">ഓരോ പ്രാവശ്യവും (1-ാം തവണ, 2-ാം തവണ മുതലായവ) ലഭിച്ച മാർക്കുകൾ ഇവിടെ നേരിട്ട് തിരുത്താം.</p>
+        
+        <div class="add-input-box">
+            <input type="text" id="newStudentName" placeholder="പുതിയ കുട്ടിയുടെ പേര്...">
+            <button class="add-btn" onclick="addNewStudent()">ചേർക്കുക</button>
+        </div>
+
+        <div id="editListContainer"></div>
+
+        <button class="close-modal-btn" onclick="closeEditModal()">സേവ് ചെയ്ത് പുറത്തുകടക്കുക</button>
+    </div>
+</div>
+
+<script>
+    const defaultStudents = [
+        { id: 1, name: "BISHRUL HAFI P P", marksList: [], lastTestedDate: "" },
+        { id: 2, name: "AYMAN SHUHAIB", marksList: [], lastTestedDate: "" },
+        { id: 3, name: "SAFIYULLA.V.P", marksList: [], lastTestedDate: "" },
+        { id: 4, name: "MUHAMMED SAFWAN K", marksList: [], lastTestedDate: "" },
+        { id: 5, name: "SHAHKIYAN .A", marksList: [], lastTestedDate: "" },
+        { id: 6, name: "MOHAMMAD RABEE", marksList: [], lastTestedDate: "" },
+        { id: 7, name: "ABDUL HANNAN K P", marksList: [], lastTestedDate: "" },
+        { id: 8, name: "RAZIM FAISAL. K", marksList: [], lastTestedDate: "" },
+        { id: 9, name: "MUHAMMED MOOSA N.P", marksList: [], lastTestedDate: "" },
+        { id: 10, name: "JAZLAAN", marksList: [], lastTestedDate: "" },
+        { id: 11, name: "SHAZIN SOUKHA", marksList: [], lastTestedDate: "" },
+        { id: 12, name: "MUHAMMED ESHAN", marksList: [], lastTestedDate: "" },
+        { id: 13, name: "SAADIA SHAMEEL", marksList: [], lastTestedDate: "" },
+        { id: 14, name: "FATHIMATH SHIRIN.M.A", marksList: [], lastTestedDate: "" },
+        { id: 15, name: "AYRA MEHRIN .MP", marksList: [], lastTestedDate: "" },
+        { id: 16, name: "AYISHA MEHVISH V P", marksList: [], lastTestedDate: "" },
+        { id: 17, name: "AYISHA SHAFEEK", marksList: [], lastTestedDate: "" },
+        { id: 18, name: "FATHIMA.M", marksList: [], lastTestedDate: "" },
+        { id: 19, name: "JANNAH JUNAID", marksList: [], lastTestedDate: "" },
+        { id: 20, name: "FARIHA ASHRAF", marksList: [], lastTestedDate: "" },
+        { id: 21, name: "FATHIMA HANEEF", marksList: [], lastTestedDate: "" },
+        { id: 22, name: "AYISHA HANEEF", marksList: [], lastTestedDate: "" },
+        { id: 23, name: "NOURA ABDUL JALEEL", marksList: [], lastTestedDate: "" },
+        { id: 24, name: "AYISHA IFRA T M", marksList: [], lastTestedDate: "" },
+        { id: 25, name: "FATHIMA SAMAR", marksList: [], lastTestedDate: "" },
+        { id: 26, name: "LANA FATHIMA", marksList: [], lastTestedDate: "" },
+        { id: 27, name: "SAFIYA AHMAD", marksList: [], lastTestedDate: "" }
+    ];
+
+    let quranData = JSON.parse(localStorage.getItem('madrassa_quran_v5')) || {
+        selectedMonth: "സെപ്റ്റംബർ",
+        students: defaultStudents
+    };
+
+    // പഴയ വെർഷൻ ഡാറ്റയിൽ marksList ഇല്ലാതിരുന്നെങ്കിൽ അതിനെ ഈ ഫോർമാറ്റിലേക്ക് മാറ്റുന്നു
+    quranData.students.forEach(s => {
+        if (!s.marksList) {
+            s.marksList = s.totalMark ? [s.totalMark] : [];
+        }
+    });
+
+    document.getElementById("currentMonthSelect").value = quranData.selectedMonth || "സെപ്റ്റംബർ";
+
+    function getFormattedToday() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    function changeMonth() {
+        quranData.selectedMonth = document.getElementById("currentMonthSelect").value;
+        saveToStorage();
+    }
+
+    function saveToStorage() {
+        localStorage.setItem('madrassa_quran_v5', JSON.stringify(quranData));
+    }
+
+    function getTotalMark(student) {
+        return student.marksList.reduce((sum, m) => sum + m, 0);
+    }
+
+    function loadStudents() {
+        const grid = document.getElementById("studentGrid");
+        grid.innerHTML = "";
+        const todayStr = getFormattedToday();
+
+        quranData.students.forEach((student, index) => {
+            const isTestedToday = student.lastTestedDate === todayStr;
+            let cardClass = isTestedToday ? "student-card tested-today" : "student-card";
+            const total = getTotalMark(student);
+            const count = student.marksList.length;
+
+            grid.innerHTML += `
+                <div class="${cardClass}">
+                    <span class="student-name">
+                        ${index + 1}. ${student.name} 
+                        <br><small style="color:#198754; font-weight:bold;">ആകെ: ${total} (${count} പ്രാവശ്യം)</small>
+                    </span>
+                    <div class="action-area">
+                        <input type="number" id="mark_${student.id}" class="mark-input" placeholder="മാർക്ക്" min="0">
+                        <button class="save-btn" onclick="saveMark(${student.id})">സേവ്</button>
+                    </div>
+                </div>
+            `;
+        });
+        updateSummary();
+    }
+
+    function saveMark(id) {
+        const markInput = document.getElementById(`mark_${id}`);
+        const mark = parseFloat(markInput.value);
+
+        if (isNaN(mark) || mark < 0) {
+            alert("ശരിയായ മാർക്ക് നൽകുക!");
+            return;
+        }
+
+        const student = quranData.students.find(s => s.id === id);
+        if (student) {
+            student.marksList.push(mark);
+            student.lastTestedDate = getFormattedToday(); 
+            student.todayMark = mark;
+            saveToStorage();
+            loadStudents();
+            markInput.value = "";
+        }
+    }
+
+    function updateSummary() {
+        const todayStr = getFormattedToday();
+        const todayCount = quranData.students.filter(s => s.lastTestedDate === todayStr).length;
+        const logSummary = document.getElementById("logSummary");
+
+        logSummary.innerHTML = `
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold;">
+                <span style="color: #198754;">ഇന്ന് ഓതിപ്പിച്ചത്: ${todayCount} കുട്ടികൾ</span>
+                <span style="color: #0b5ed7;">തീയതി: ${todayStr}</span>
+            </div>
+        `;
+    }
+
+    function openEditModal() {
+        document.getElementById("editModal").style.display = "flex";
+        renderEditList();
+    }
+
+    function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+        saveToStorage();
+        loadStudents();
+    }
+
+    function renderEditList() {
+        const container = document.getElementById("editListContainer");
+        container.innerHTML = "";
+        
+        quranData.students.forEach((student, index) => {
+            let attemptsHTML = '';
+            student.marksList.forEach((mark, mIdx) => {
+                attemptsHTML += `
+                    <div class="attempt-box">
+                        <span>${mIdx + 1}ദിവസം/തവണ:</span>
+                        <input type="number" value="${mark}" oninput="updateAttemptMark(${student.id}, ${mIdx}, this.value)">
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <div class="edit-row">
+                    <div class="edit-top">
+                        <span style="font-weight:bold; width:20px; font-size:0.85rem;">${index + 1}.</span>
+                        <input type="text" value="${student.name}" oninput="updateStudentName(${student.id}, this.value)" placeholder="പേര്">
+                        <button class="delete-btn" onclick="deleteStudent(${student.id})">ഡിലീറ്റ്</button>
+                    </div>
+                    <div class="attempts-container">
+                        ${attemptsHTML.length > 0 ? attemptsHTML : '<span style="color:#888;">മാർക്കുകൾ ഒന്നുമില്ല</span>'}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function updateStudentName(id, newName) {
+        const student = quranData.students.find(s => s.id === id);
+        if (student) {
+            student.name = newName;
+            saveToStorage();
+        }
+    }
+
+    function updateAttemptMark(studentId, markIndex, value) {
+        const student = quranData.students.find(s => s.id === studentId);
+        if (student) {
+            const val = value === '' ? 0 : parseFloat(value) || 0;
+            student.marksList[markIndex] = val;
+            saveToStorage();
+        }
+    }
+
+    function addNewStudent() {
+        const input = document.getElementById("newStudentName");
+        const name = input.value.trim();
+        if(!name) {
+            alert("കുട്ടിയുടെ പേര് എഴുതുക!");
+            return;
+        }
+        const newId = quranData.students.length > 0 ? Math.max(...quranData.students.map(s => s.id)) + 1 : 1;
+        quranData.students.push({ id: newId, name: name, marksList: [], lastTestedDate: "" });
+        input.value = "";
+        saveToStorage();
+        renderEditList();
+    }
+
+    function deleteStudent(id) {
+        if(confirm("ഈ കുട്ടിയെ ലിസ്റ്റിൽ നിന്ന് ഒഴിവാക്കണമെന്നുറപ്പാണോ?")) {
+            quranData.students = quranData.students.filter(s => s.id !== id);
+            saveToStorage();
+            renderEditList();
+        }
+    }
+
+    function resetMonthlyData() {
+        if(confirm("ഈ മാസത്തെ മുഴുവൻ മാർക്കുകളും പൂജ്യമാക്കി (Reset) മാറ്റണമെന്നുറപ്പാണോ?")) {
+            quranData.students.forEach(s => {
+                s.marksList = [];
+                s.lastTestedDate = "";
+            });
+            saveToStorage();
+            loadStudents();
+            alert("മാർക്കുകൾ റീസെറ്റ് ചെയ്തു!");
+        }
+    }
+
+    function generateDailyReport() {
+        const todayStr = getFormattedToday();
+        const currentMonth = quranData.selectedMonth || document.getElementById("currentMonthSelect").value;
+        
+        let report = `📖 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\n*ഖുർആൻ പാരായണ ടെസ്റ്റ് (ഇന്നത്തെ റിപ്പോർട്ട്)*\nമാസം: *${currentMonth}* | തീയതി: *${todayStr}*\n\n`;
+        report += `✨ *ഇന്ന് ഓതിപ്പിച്ച കുട്ടികൾ:* \n`;
+        
+        let count = 1;
+        let testedTodayList = quranData.students.filter(s => s.lastTestedDate === todayStr);
+
+        if (testedTodayList.length === 0) {
+            alert("ഇന്ന് ആരുടെയും മാർക്കുകൾ സേവ് ചെയ്തിട്ടില്ല!");
+            return;
+        }
+
+        testedTodayList.forEach(student => {
+            const total = getTotalMark(student);
+            const testCount = student.marksList.length;
+            report += `${count}. ${student.name} - ഇന്നത്തെ മാർക്ക്: *${student.todayMark}* (ആകെ: ${total}, ${testCount} പ്രാവശ്യം)\n`;
+            count++;
+        });
+
+        showAndCopyReport(report);
+    }
+
+    function generateMonthlyReport() {
+        const currentMonth = quranData.selectedMonth || document.getElementById("currentMonthSelect").value;
+
+        let report = `📖 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\n*ഖുർആൻ പാരായണ ടെസ്റ്റ് (മാസാവസാന റിപ്പോർട്ട്)*\nമാസം: *${currentMonth}*\n\n`;
+        report += `📊 *മുഴുവൻ കുട്ടികളുടെയും ആകെ മാർക്ക് വിവരങ്ങൾ:* \n`;
+        
+        quranData.students.forEach((student, idx) => {
+            const total = getTotalMark(student);
+            const testCount = student.marksList.length;
+            report += `${idx + 1}. ${student.name} - ആകെ: *${total}* (${testCount} പ്രാവശ്യം)\n`;
+        });
+
+        showAndCopyReport(report);
+    }
+
+    function showAndCopyReport(reportText) {
+        const outputBox = document.getElementById("outputBox");
+        outputBox.style.display = "block";
+        outputBox.value = reportText;
+        outputBox.select();
+
+        try {
+            navigator.clipboard.writeText(reportText);
+            alert("റിപ്പോർട്ട് വിജയകരമായി കോപ്പി ചെയ്തു!");
+        } catch (err) {
+            alert("താഴെ കാണുന്ന ബോക്സിൽ നിന്ന് ടെക്സ്റ്റ് കോപ്പി ചെയ്യുക.");
+        }
+    }
+
+    window.onload = loadStudents;
+</script>
+
+</body>
+</html>
