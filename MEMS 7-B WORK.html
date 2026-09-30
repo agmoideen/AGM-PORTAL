@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMS TRIKARPUR - 7B Master Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 5px;
+            color: #333;
+        }
+        .container {
+            max-width: 100%;
+            margin: auto;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #0b5ed7;
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+        p.sub {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .top-action-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .edit-list-btn {
+            flex: 2;
+            background-color: #495057;
+            color: white;
+            border: none;
+            padding: 9px;
+            font-size: 0.8rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .lesson-control {
+            flex: 3;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #0b5ed7;
+        }
+        .lesson-control input {
+            width: 35px;
+            padding: 5px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #0b5ed7;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .lesson-btn {
+            background-color: #0b5ed7;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .subject-bar {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        .sub-btn {
+            flex: 1;
+            padding: 8px 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: 1px solid #0b5ed7;
+            background: white;
+            color: #0b5ed7;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .sub-btn.active {
+            background: #0b5ed7;
+            color: white;
+        }
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 450px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px 4px;
+            text-align: center;
+        }
+        th {
+            background-color: #0b5ed7;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        
+        /* കുട്ടികളുടെ പേര് നിൽക്കുന്ന കോളം ഫിക്സ് ചെയ്ത് നിർത്താൻ */
+        th.name-col, td.name-col {
+            text-align: left;
+            position: sticky;
+            left: 0;
+            background-color: #f8f9fa;
+            z-index: 5;
+            min-width: 190px;
+            max-width: 190px;
+            width: 190px;
+            white-space: normal;
+            border-right: 2px solid #0b5ed7;
+        }
+        th.name-col {
+            background-color: #0b5ed7;
+            z-index: 6;
+            color: white;
+        }
+        
+        /* ഓരോ പാഠത്തിനും ഇടയിൽ വ്യക്തമായ കളർ ലൈൻ നൽകാൻ */
+        .lesson-divider {
+            border-right: 3px solid #ff9800 !important;
+        }
+
+        .sub-th {
+            font-size: 0.65rem;
+            background-color: #e9ecef;
+            color: #333;
+            border-top: 1px solid #ddd;
+            padding: 4px 2px;
+            min-width: 45px;
+        }
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .footer-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            flex: 1;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+        }
+        .reset-btn {
+            background-color: #dc3545;
+        }
+        #outputBox {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            padding: 8px;
+            font-size: 0.85rem;
+            border: 1px solid #25D366;
+            border-radius: 5px;
+            box-sizing: border-box;
+            display: none;
+            background: #f9fff9;
+        }
+
+        /* Modal Styles for Editing Students */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 15px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .modal-header {
+            color: #0b5ed7;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .add-box {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        .add-box input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .add-btn {
+            background-color: #0b5ed7;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .student-edit-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .student-edit-row span {
+            width: 25px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        .student-edit-row input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .close-modal-btn {
+            width: 100%;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>MEMS TRIKARPUR - 7B</h2>
+    <p class="sub">പാഠങ്ങളും ആക്ടിവിറ്റികളും ട്രാക്ക് ചെയ്യാം</p>
+
+    <!-- ടോപ്പ് ബാർ: എഡിറ്റ് ബട്ടണും പാഠങ്ങളുടെ എണ്ണം കൂട്ടാനും കുറയ്ക്കാനുമുള്ള ബട്ടണുകൾ -->
+    <div class="top-action-bar">
+        <button class="edit-list-btn" onclick="openModal()">✏️ കുട്ടികളുടെ ലിസ്റ്റ് എഡിറ്റ്</button>
+        <div class="lesson-control">
+            <label for="totalLessons">പാഠങ്ങൾ:</label>
+            <button class="lesson-btn" onclick="adjustLessons(-1)">-</button>
+            <input type="number" id="totalLessons" min="1" max="30" value="12" oninput="updateLessonCount()">
+            <button class="lesson-btn" onclick="adjustLessons(1)">+</button>
+        </div>
+    </div>
+
+    <!-- വിഷയങ്ങൾ മാറ്റാനുള്ള ബട്ടണുകൾ -->
+    <div class="subject-bar">
+        <button class="sub-btn active" id="btnUloom" onclick="changeSubject('ULOOM WORK')">ULOOM</button>
+        <button class="sub-btn" id="btnFiqh" onclick="changeSubject('FIQH WORK')">FIQH</button>
+        <button class="sub-btn" id="btnThajveed" onclick="changeSubject('THAJVEED WORK')">THAJVEED</button>
+    </div>
+
+    <!-- മുഴുവൻ പാഠങ്ങളും ആക്ടിവിറ്റികളും അടങ്ങിയ ടേബിൾ -->
+    <div class="table-container">
+        <table id="workTable">
+            <thead id="tableHead">
+                <!-- Dynamically loaded -->
+            </thead>
+            <tbody id="tableBody">
+                <!-- Data loaded dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer-actions">
+        <button class="action-btn reset-btn" onclick="resetSubject()">🔄 ഈ വിഷയം ക്ലിയർ ചെയ്യുക</button>
+        <button class="action-btn" onclick="generateReport()">📢 റിപ്പോർട്ട് കോപ്പി ചെയ്യുക</button>
+    </div>
+
+    <textarea id="outputBox" placeholder="റിപ്പോർട്ട് ഇവിടെ വരുമ്പോൾ കോപ്പി ചെയ്യാം..." readonly></textarea>
+</div>
+
+<!-- മോഡൽ: കുട്ടികളുടെ ലിസ്റ്റ് എഡിറ്റ് ചെയ്യാൻ -->
+<div id="studentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">കുട്ടികളുടെ പേരുകൾ മാറ്റുക / പുതിയത് ചേർക്കുക</div>
+        <div class="add-box">
+            <input type="text" id="newStudentName" placeholder="പുതിയ കുട്ടിയുടെ പേര് എഴുതുക..">
+            <button class="add-btn" onclick="addStudent()">ചേർക്കുക</button>
+        </div>
+        <div id="modalStudentList" style="max-height: 300px; overflow-y: auto;">
+            <!-- Dynamically loaded student rows -->
+        </div>
+        <button class="close-modal-btn" onclick="closeModal()">പൂർത്തിയായി / അടയ്ക്കുക</button>
+    </div>
+</div>
+
+<script>
+    const defaultStudents7B = [
+        "ABDUL HADHI H", "AHMAD JASIM K P", "EZAAN SHUHAIB", "MUHAMED RAZMIN P P", 
+        "MUHAMMAD ABDUL NAFIH K", "MUHAMMAD SINAN A P", "MUHAMMED T P", "MUHAMMED ASJAD", 
+        "MUHAMMED HAMDAN M C", "MUHAMMED HAMZA N", "MUHAMMED NABEEL A P", 
+        "MUHAMMED RAIHAN DAKWAN", "MUHAMMED RIZWAN M T P", "MUHAMMED SARHAN A G", 
+        "RAYAN FARIS", "SALMAN FARIS P", "ASHNA FATHIMA ABOOBACKER", "AYISHA T C", 
+        "FATHIMA AMRU", "FATHIMA SIDDIK ABDUL RAHMAN", "FATHIMA T", "FATHIMATH ASBIRA", 
+        "HANFA HASHIM", "MINHA FATHIMA P P", "SHAHANA SALIM", "SWALIHA", "ZIYA MEHRIN K M"
+    ];
+
+    let currentSubject = "ULOOM WORK";
+    let appData = JSON.parse(localStorage.getItem('mems_7b_master_data')) || {};
+    let memsStudents7B = JSON.parse(localStorage.getItem('mems_7b_students')) || defaultStudents7B;
+    let subjectLessons = JSON.parse(localStorage.getItem('mems_7b_lessons')) || {
+        "ULOOM WORK": 12,
+        "FIQH WORK": 12,
+        "THAJVEED WORK": 12
+    };
+
+    function changeSubject(sub) {
+        currentSubject = sub;
+        document.getElementById('btnUloom').classList.remove('active');
+        document.getElementById('btnFiqh').classList.remove('active');
+        document.getElementById('btnThajveed').classList.remove('active');
+
+        if(sub === 'ULOOM WORK') document.getElementById('btnUloom').classList.add('active');
+        if(sub === 'FIQH WORK') document.getElementById('btnFiqh').classList.add('active');
+        if(sub === 'THAJVEED WORK') document.getElementById('btnThajveed').classList.add('active');
+
+        document.getElementById('totalLessons').value = subjectLessons[currentSubject] || 12;
+        loadTable();
+    }
+
+    function adjustLessons(amount) {
+        let input = document.getElementById('totalLessons');
+        let val = parseInt(input.value) || 12;
+        val += amount;
+        if(val < 1) val = 1;
+        if(val > 30) val = 30;
+        input.value = val;
+        updateLessonCount();
+    }
+
+    function updateLessonCount() {
+        let val = parseInt(document.getElementById('totalLessons').value);
+        if(isNaN(val)) return;
+        if(val < 1) val = 1;
+        if(val > 30) val = 30;
+        subjectLessons[currentSubject] = val;
+        localStorage.setItem('mems_7b_lessons', JSON.stringify(subjectLessons));
+        loadTable();
+    }
+
+    function loadTable() {
+        if (!appData[currentSubject]) {
+            appData[currentSubject] = {};
+        }
+
+        let totalL = subjectLessons[currentSubject] || 12;
+
+        let headRow1 = `<tr><th rowspan="2" class="name-col">കുട്ടികളുടെ പേര്</th>`;
+        let headRow2 = `<tr>`;
+
+        for (let l = 1; l <= totalL; l++) {
+            headRow1 += `<th colspan="2" class="lesson-divider">പാഠം ${l}</th>`;
+            headRow2 += `<th class="sub-th">പഠനം</th><th class="sub-th lesson-divider">ആക്ടിവിറ്റി</th>`;
+        }
+        headRow1 += `</tr>`;
+        headRow2 += `</tr>`;
+
+        document.getElementById("tableHead").innerHTML = headRow1 + headRow2;
+
+        const tbody = document.getElementById("tableBody");
+        tbody.innerHTML = "";
+
+        memsStudents7B.forEach((name, studentIndex) => {
+            if (!appData[currentSubject][studentIndex]) {
+                appData[currentSubject][studentIndex] = {};
+            }
+
+            let rowHTML = `<tr><td class="name-col">${studentIndex + 1}. ${name}</td>`;
+            
+            for (let lesson = 1; lesson <= totalL; lesson++) {
+                if (!appData[currentSubject][studentIndex][lesson]) {
+                    appData[currentSubject][studentIndex][lesson] = { lessonCheck: false, activityCheck: false };
+                }
+
+                const lChecked = appData[currentSubject][studentIndex][lesson].lessonCheck ? "checked" : "";
+                const aChecked = appData[currentSubject][studentIndex][lesson].activityCheck ? "checked" : "";
+
+                rowHTML += `<td><input type="checkbox" ${lChecked} onchange="saveCheck(${studentIndex}, ${lesson}, 'lessonCheck', this.checked)"></td>`;
+                rowHTML += `<td class="lesson-divider"><input type="checkbox" ${aChecked} onchange="saveCheck(${studentIndex}, ${lesson}, 'activityCheck', this.checked)"></td>`;
+            }
+            
+            rowHTML += `</tr>`;
+            tbody.innerHTML += rowHTML;
+        });
+    }
+
+    function saveCheck(studentIndex, lesson, type, isChecked) {
+        if (!appData[currentSubject]) appData[currentSubject] = {};
+        if (!appData[currentSubject][studentIndex]) appData[currentSubject][studentIndex] = {};
+        if (!appData[currentSubject][studentIndex][lesson]) appData[currentSubject][studentIndex][lesson] = { lessonCheck: false, activityCheck: false };
+
+        appData[currentSubject][studentIndex][lesson][type] = isChecked;
+        localStorage.setItem('mems_7b_master_data', JSON.stringify(appData));
+    }
+
+    function resetSubject() {
+        if(confirm(`${currentSubject}-ലെ മുഴുവൻ കുട്ടികളുടെയും എല്ലാ പാഠങ്ങളിലെയും ആക്ടിവിറ്റികളുടെയും ടിക്കുകൾ മാറ്റണമെന്നുറപ്പാണോ?`)) {
+            appData[currentSubject] = {};
+            localStorage.setItem('mems_7b_master_data', JSON.stringify(appData));
+            loadTable();
+            alert("റീസെറ്റ് ചെയ്തു!");
+        }
+    }
+
+    function generateReport() {
+        let totalL = subjectLessons[currentSubject] || 12;
+        let report = `🏫 *MEMS TRIKARPUR - 7B*\n`;
+        report += `📚 വിഷയം: *${currentSubject}*\n\n`;
+        
+        memsStudents7B.forEach((name, studentIndex) => {
+            let details = [];
+            for (let l = 1; l <= totalL; l++) {
+                let data = appData[currentSubject]?.[studentIndex]?.[l];
+                if (data && (data.lessonCheck || data.activityCheck)) {
+                    let status = [];
+                    if (data.lessonCheck) status.push("പാഠം");
+                    if (data.activityCheck) status.push("ആക്ടിവിറ്റി");
+                    details.push(`വ. ${l} (${status.join(', ')})`);
+                }
+            }
+            let statusStr = details.length > 0 ? details.join(', ') : `ഒന്നും ചെയ്തിട്ടില്ല`;
+            report += `${studentIndex + 1}. ${name} ➔ ${statusStr}\n`;
+        });
+
+        const outputBox = document.getElementById("outputBox");
+        outputBox.style.display = "block";
+        outputBox.value = report;
+        outputBox.select();
+
+        try {
+            navigator.clipboard.writeText(report);
+            alert("റിപ്പോർട്ട് കോപ്പി ചെയ്തു!");
+        } catch (err) {
+            alert("താഴെയുള്ള ബോക്സിൽ നിന്ന് കോപ്പി ചെയ്യുക.");
+        }
+    }
+
+    // Modal Functions for Student Management
+    function openModal() {
+        renderModalList();
+        document.getElementById('studentModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('studentModal').style.display = 'none';
+        loadTable();
+    }
+
+    function renderModalList() {
+        const modalList = document.getElementById('modalStudentList');
+        modalList.innerHTML = "";
+
+        memsStudents7B.forEach((name, index) => {
+            let row = document.createElement('div');
+            row.className = 'student-edit-row';
+            row.innerHTML = `
+                <span>${index + 1}.</span>
+                <input type="text" value="${name}" id="student_input_${index}" oninput="updateStudentName(${index}, this.value)">
+                <button class="remove-btn" onclick="removeStudent(${index})">ഒഴിവാക്കുക</button>
+            `;
+            modalList.appendChild(row);
+        });
+    }
+
+    function updateStudentName(index, newName) {
+        memsStudents7B[index] = newName.trim();
+        localStorage.setItem('mems_7b_students', JSON.stringify(memsStudents7B));
+    }
+
+    function addStudent() {
+        const input = document.getElementById('newStudentName');
+        const name = input.value.trim();
+        if(name !== "") {
+            memsStudents7B.push(name);
+            localStorage.setItem('mems_7b_students', JSON.stringify(memsStudents7B));
+            input.value = "";
+            renderModalList();
+        }
+    }
+
+    function removeStudent(index) {
+        if(confirm(`${memsStudents7B[index]} എന്ന കുട്ടിയെ ഒഴിവാക്കണമെന്നുറപ്പാണോ?`)) {
+            memsStudents7B.splice(index, 1);
+            localStorage.setItem('mems_7b_students', JSON.stringify(memsStudents7B));
+            renderModalList();
+        }
+    }
+
+    window.onload = () => {
+        document.getElementById('totalLessons').value = subjectLessons[currentSubject] || 12;
+        loadTable();
+    };
+</script>
+
+</body>
+</html>
