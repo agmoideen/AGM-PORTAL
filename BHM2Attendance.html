@@ -173,21 +173,31 @@
             display: flex;
             gap: 5px;
             margin-bottom: 8px;
+            align-items: center;
         }
-        .edit-row input {
-            flex: 1;
-            padding: 8px;
-            font-size: 0.9rem;
+        .edit-row input[type="text"] {
+            flex: 2;
+            padding: 6px;
+            font-size: 0.85rem;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+        .edit-row input[type="number"] {
+            width: 55px;
+            padding: 6px;
+            font-size: 0.85rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
         }
         .delete-btn {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 5px 8px;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 0.75rem;
         }
         .add-input-box {
             display: flex;
@@ -227,10 +237,10 @@
 
 <div class="container">
     <h2>ബദ്‌റുൽഹുദ മദ്റസ - രണ്ടാം ക്ലാസ്സ്</h2>
-    <p class="sub">ഹാജർ, സമയം (സ്റ്റാർട്ടിങ് 6:40 AM) & മാസ റാങ്ക് ലിസ്റ്റ്</p>
+    <p class="sub">ഹാജർ, സമയം & മാസ റാങ്ക് ലിസ്റ്റ്</p>
 
     <div class="top-actions">
-        <button class="action-btn" onclick="openEditModal()">✏️ കുട്ടികളുടെ ലിസ്റ്റ് എഡിറ്റ്</button>
+        <button class="action-btn" onclick="openEditModal()">✏️ കുട്ടികളുടെ ലിസ്റ്റ് & ഹാജർ എഡിറ്റ്</button>
         <button class="action-btn" style="background-color: #dc3545;" onclick="resetData()">🔄 റീസെറ്റ്</button>
     </div>
 
@@ -253,7 +263,8 @@
 <!-- Modal Window for Editing Students -->
 <div class="modal" id="editModal">
     <div class="modal-content">
-        <h3 style="margin-top:0; color:#0b5ed7;">കുട്ടികളുടെ പേരുകൾ മാറ്റുക / പുതിയത് ചേർക്കുക</h3>
+        <h3 style="margin-top:0; color:#0b5ed7;">പേരുകളും ആകെ ഹാജറും എഡിറ്റ്‌ ചെയ്യാം</h3>
+        <p style="font-size: 0.75rem; color: #666;">നാമത്തിന് ശേഷം കാണുന്ന ബോക്സിൽ കുട്ടിയുടെ ആകെ ഹാജർ എണ്ണം നേരിട്ട് മാറ്റാവുന്നതാണ്.</p>
         
         <div class="add-input-box">
             <input type="text" id="newStudentName" placeholder="പുതിയ കുട്ടിയുടെ പേര് എഴുതുക...">
@@ -268,41 +279,47 @@
 
 <script>
     const defaultStudents = [
-        { id: 1, name: "BISHRUL HAFI P P", status: "none", time: "06:40" },
-        { id: 2, name: "AYMAN SHUHAIB", status: "none", time: "06:40" },
-        { id: 3, name: "SAFIYULLA.V.P", status: "none", time: "06:40" },
-        { id: 4, name: "MUHAMMED SAFWAN K", status: "none", time: "06:40" },
-        { id: 5, name: "SHAHKIYAN .A", status: "none", time: "06:40" },
-        { id: 6, name: "MOHAMMAD RABEE", status: "none", time: "06:40" },
-        { id: 7, name: "ABDUL HANNAN K P", status: "none", time: "06:40" },
-        { id: 8, name: "RAZIM FAISAL. K", status: "none", time: "06:40" },
-        { id: 9, name: "MUHAMMED MOOSA N.P", status: "none", time: "06:40" },
-        { id: 10, name: "JAZLAAN", status: "none", time: "06:40" },
-        { id: 11, name: "SHAZIN SOUKHA", status: "none", time: "06:40" },
-        { id: 12, name: "MUHAMMED ESHAN", status: "none", time: "06:40" },
-        { id: 13, name: "SAADIA SHAMEEL", status: "none", time: "06:40" },
-        { id: 14, name: "FATHIMATH SHIRIN.M.A", status: "none", time: "06:40" },
-        { id: 15, name: "AYRA MEHRIN .MP", status: "none", time: "06:40" },
-        { id: 16, name: "AYISHA MEHVISH V P", status: "none", time: "06:40" },
-        { id: 17, name: "AYISHA SHAFEEK", status: "none", time: "06:40" },
-        { id: 18, name: "FATHIMA.M", status: "none", time: "06:40" },
-        { id: 19, name: "JANNAH JUNAID", status: "none", time: "06:40" },
-        { id: 20, name: "FARIHA ASHRAF", status: "none", time: "06:40" },
-        { id: 21, name: "FATHIMA HANEEF", status: "none", time: "06:40" },
-        { id: 22, name: "AYISHA HANEEF", status: "none", time: "06:40" },
-        { id: 23, name: "NOURA ABDUL JALEEL", status: "none", time: "06:40" },
-        { id: 24, name: "AYISHA IFRA T M", status: "none", time: "06:40" },
-        { id: 25, name: "FATHIMA SAMAR", status: "none", time: "06:40" },
-        { id: 26, name: "LANA FATHIMA", status: "none", time: "06:40" },
-        { id: 27, name: "SAFIYA AHMAD", status: "none", time: "06:40" }
+        { id: 1, name: "BISHRUL HAFI P P", status: "none", time: "", totalAttendance: 0 },
+        { id: 2, name: "AYMAN SHUHAIB", status: "none", time: "", totalAttendance: 0 },
+        { id: 3, name: "SAFIYULLA.V.P", status: "none", time: "", totalAttendance: 0 },
+        { id: 4, name: "MUHAMMED SAFWAN K", status: "none", time: "", totalAttendance: 0 },
+        { id: 5, name: "SHAHKIYAN .A", status: "none", time: "", totalAttendance: 0 },
+        { id: 6, name: "MOHAMMAD RABEE", status: "none", time: "", totalAttendance: 0 },
+        { id: 7, name: "ABDUL HANNAN K P", status: "none", time: "", totalAttendance: 0 },
+        { id: 8, name: "RAZIM FAISAL. K", status: "none", time: "", totalAttendance: 0 },
+        { id: 9, name: "MUHAMMED MOOSA N.P", status: "none", time: "", totalAttendance: 0 },
+        { id: 10, name: "JAZLAAN", status: "none", time: "", totalAttendance: 0 },
+        { id: 11, name: "SHAZIN SOUKHA", status: "none", time: "", totalAttendance: 0 },
+        { id: 12, name: "MUHAMMED ESHAN", status: "none", time: "", totalAttendance: 0 },
+        { id: 13, name: "SAADIA SHAMEEL", status: "none", time: "", totalAttendance: 0 },
+        { id: 14, name: "FATHIMATH SHIRIN.M.A", status: "none", time: "", totalAttendance: 0 },
+        { id: 15, name: "AYRA MEHRIN .MP", status: "none", time: "", totalAttendance: 0 },
+        { id: 16, name: "AYISHA MEHVISH V P", status: "none", time: "", totalAttendance: 0 },
+        { id: 17, name: "AYISHA SHAFEEK", status: "none", time: "", totalAttendance: 0 },
+        { id: 18, name: "FATHIMA.M", status: "none", time: "", totalAttendance: 0 },
+        { id: 19, name: "JANNAH JUNAID", status: "none", time: "", totalAttendance: 0 },
+        { id: 20, name: "FARIHA ASHRAF", status: "none", time: "", totalAttendance: 0 },
+        { id: 21, name: "FATHIMA HANEEF", status: "none", time: "", totalAttendance: 0 },
+        { id: 22, name: "AYISHA HANEEF", status: "none", time: "", totalAttendance: 0 },
+        { id: 23, name: "NOURA ABDUL JALEEL", status: "none", time: "", totalAttendance: 0 },
+        { id: 24, name: "AYISHA IFRA T M", status: "none", time: "", totalAttendance: 0 },
+        { id: 25, name: "FATHIMA SAMAR", status: "none", time: "", totalAttendance: 0 },
+        { id: 26, name: "LANA FATHIMA", status: "none", time: "", totalAttendance: 0 },
+        { id: 27, name: "SAFIYA AHMAD", status: "none", time: "", totalAttendance: 0 }
     ];
 
-    let students = JSON.parse(localStorage.getItem('madrassa_attendance_rank_v1')) || defaultStudents;
-    let monthlyHistory = JSON.parse(localStorage.getItem('madrassa_monthly_history')) || {}; // 날짜별 기록 저장용
+    let students = JSON.parse(localStorage.getItem('madrassa_attendance_rank_v2')) || defaultStudents;
 
     function saveToStorage() {
-        localStorage.setItem('madrassa_attendance_rank_v1', JSON.stringify(students));
-        localStorage.setItem('madrassa_monthly_history', JSON.stringify(monthlyHistory));
+        localStorage.setItem('madrassa_attendance_rank_v2', JSON.stringify(students));
+    }
+
+    // നിലവിലെ സമയം (HH:MM format) എടുക്കാൻ
+    function getCurrentTimeString() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
     }
 
     function loadStudents() {
@@ -328,7 +345,7 @@
 
             grid.innerHTML += `
                 <div class="student-card ${cardClass}">
-                    <span class="student-name" onclick="toggleStatus(${index})">${index + 1}. ${student.name}</span>
+                    <span class="student-name" onclick="toggleStatus(${index})">${index + 1}. ${student.name} <small style="color:#666; font-weight:normal;">(ഹാജർ: ${student.totalAttendance || 0})</small></span>
                     <div class="status-area">
                         ${timeInputHTML}
                         <button class="toggle-btn ${btnClass}" onclick="toggleStatus(${index})">${btnText}</button>
@@ -344,10 +361,13 @@
 
         if (student.status === "none" || !student.status) {
             student.status = "present";
-            student.time = "06:40"; // ഡിഫോൾട്ട് സ്റ്റാർട്ടിങ് സമയം
+            // മുമ്പ് ഹാജർ ആകുമ്പോൾ 6:40 എന്ന് മാത്രം വരുന്നത് മാറ്റി, നിലവിലെ ടൈം നൽകുന്നു (മാറ്റണമെങ്കിൽ യൂസറിന് ടൈം ബോക്സിൽ മാറ്റാം)
+            student.time = getCurrentTimeString(); 
+            student.totalAttendance = (student.totalAttendance || 0) + 1; // ഹാജർ കൂട്ടി ചേർക്കുന്നു
         } else if (student.status === "present") {
             student.status = "absent";
             student.time = "";
+            student.totalAttendance = Math.max(0, (student.totalAttendance || 1) - 1); // അബ്സെന്റ് ആക്കിയാൽ കുറയ്ക്കുന്നു
         } else {
             student.status = "none";
             student.time = "";
@@ -394,9 +414,10 @@
         students.forEach((student, index) => {
             container.innerHTML += `
                 <div class="edit-row">
-                    <span style="padding-top:8px; font-weight:bold; width:25px;">${index + 1}.</span>
-                    <input type="text" value="${student.name}" oninput="updateStudentName(${index}, this.value)">
-                    <button class="delete-btn" onclick="deleteStudent(${index})">ഒഴിവാക്കുക</button>
+                    <span style="font-weight:bold; width:20px; font-size:0.85rem;">${index + 1}.</span>
+                    <input type="text" value="${student.name}" oninput="updateStudentName(${index}, this.value)" placeholder="പേര്">
+                    <input type="number" value="${student.totalAttendance || 0}" oninput="updateTotalAttendance(${index}, this.value)" title="ആകെ ഹാജർ">
+                    <button class="delete-btn" onclick="deleteStudent(${index})">ഒഴിവാക്ക്</button>
                 </div>
             `;
         });
@@ -407,6 +428,11 @@
         saveToStorage();
     }
 
+    function updateTotalAttendance(index, val) {
+        students[index].totalAttendance = parseInt(val) || 0;
+        saveToStorage();
+    }
+
     function addNewStudent() {
         const input = document.getElementById("newStudentName");
         const name = input.value.trim();
@@ -414,7 +440,7 @@
             alert("കുട്ടിയുടെ പേര് എഴുതുക!");
             return;
         }
-        students.push({ id: students.length + 1, name: name, status: "none", time: "06:40" });
+        students.push({ id: students.length + 1, name: name, status: "none", time: "", totalAttendance: 0 });
         input.value = "";
         saveToStorage();
         renderEditList();
@@ -430,7 +456,7 @@
 
     function resetData() {
         if(confirm("എല്ലാ ഹാജർ വിവരങ്ങളും മാറ്റി ആദ്യത്തെ ലിസ്റ്റിലേക്ക് റീസെറ്റ് ചെയ്യണോ?")) {
-            localStorage.removeItem('madrassa_attendance_rank_v1');
+            localStorage.removeItem('madrassa_attendance_rank_v2');
             students = JSON.parse(JSON.stringify(defaultStudents));
             loadStudents();
             alert("റീസെറ്റ് ചെയ്തു!");
@@ -447,12 +473,7 @@
         const dayName = daysMalayalam[now.getDay()];
         const formattedDate = `${day}/${month}/${year} (${dayName})`;
 
-        // ഇന്നത്തെ ഹാജർ ഹിസ്റ്ററിയിൽ സേവ് ചെയ്യുന്നു (റാങ്കിംഗിനായി)
-        const dateKey = `${year}-${month}-${day}`;
-        monthlyHistory[dateKey] = students.map(s => ({ name: s.name, status: s.status, time: s.time }));
-        saveToStorage();
-
-        let report = `📚 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\nതീയതി: ${formattedDate}\n✨ *രണ്ടാം ക്ലാസ് ഹാജർ വിവരങ്ങൾ (സമയം 6:40 AM):*\n\n`;
+        let report = `📚 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\nതീയതി: ${formattedDate}\n✨ *രണ്ടാം ക്ലാസ് ഹാജർ വിവരങ്ങൾ:*\n\n`;
         
         report += `🟢 *ഹാജരായവർ:* \n`;
         let pCount = 1;
@@ -496,36 +517,16 @@
         }
     }
 
-    // കൃത്യസമയത്ത് (<= 6:40) എത്തിയതിന്റെ അടിസ്ഥാനത്തിൽ Top 3 കണ്ടെത്തുന്നു
+    // ആകെ ഹാജർ (Total Attendance) അടിസ്ഥാനമാക്കി Top 3 കണ്ടെത്തുന്നു
     function generateMonthlyRank() {
-        let scores = {};
-        students.forEach(s => scores[s.name] = 0);
+        // കുട്ടികളെ ആകെ ഹാജറിന്റെ അടിസ്ഥാനത്തിൽ സോർട്ട് ചെയ്യുന്നു
+        let sortedStudents = [...students].sort((a, b) => (b.totalAttendance || 0) - (a.totalAttendance || 0));
 
-        // സേവ് ചെയ്ത എല്ലാ ദിവസത്തെയും ഡാറ്റ പരിശോധിക്കുന്നു
-        for (let date in monthlyHistory) {
-            monthlyHistory[date].forEach(record => {
-                if (record.status === "present" && record.time) {
-                    // സമയം താരതമ്യം ചെയ്യുന്നു (06:40 അല്ലെങ്കിൽ അതിനുമുമ്പ്)
-                    if (record.time <= "06:40") {
-                        if (scores[record.name] !== undefined) {
-                            scores[record.name] += 1;
-                        }
-                    }
-                }
-            });
-        }
-
-        // പോയിന്റ് അടിസ്ഥാനത്തിൽ സോർട്ട് ചെയ്യുന്നു
-        let sortedStudents = Object.keys(scores).map(name => ({
-            name: name,
-            score: scores[name]
-        })).sort((a, b) => b.score - a.score);
-
-        let report = `🏆 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\n*ഹരിത ഹാജർ & കൃത്യസമയ (06:40 AM) റാങ്ക് ലിസ്റ്റ്* 🌟\n\n`;
+        let report = `🏆 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\n*മാസ ഹാജർ റാങ്ക് ലിസ്റ്റ്* 🌟\n\n`;
         
         for (let i = 0; i < Math.min(3, sortedStudents.length); i++) {
             let medal = i === 0 ? "🥇 ഒന്നാം സ്ഥാനം" : (i === 1 ? "🥈 രണ്ടാം സ്ഥാനം" : "🥉 മൂന്നാം സ്ഥാനം");
-            report += `${medal}: *${sortedStudents[i].name}* (${sortedStudents[i].score} ദിവസങ്ങളിൽ കൃത്യസമയത്ത്)\n`;
+            report += `${medal}: *${sortedStudents[i].name}* (${sortedStudents[i].totalAttendance || 0} ദിവസങ്ങളിൽ ഹാജർ)\n`;
         }
 
         const outputBox = document.getElementById("outputBox");
