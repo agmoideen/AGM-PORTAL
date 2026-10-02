@@ -169,6 +169,23 @@
             max-height: 80vh;
             overflow-y: auto;
         }
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .back-menu-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .back-menu-btn:hover { background: #5a6268; }
         .edit-row {
             display: flex;
             gap: 5px;
@@ -263,8 +280,11 @@
 <!-- Modal Window for Editing Students -->
 <div class="modal" id="editModal">
     <div class="modal-content">
-        <h3 style="margin-top:0; color:#0b5ed7;">പേരുകളും ആകെ ഹാജറും എഡിറ്റ്‌ ചെയ്യാം</h3>
-        <p style="font-size: 0.75rem; color: #666;">നാമത്തിന് ശേഷം കാണുന്ന ബോക്സിൽ കുട്ടിയുടെ ആകെ ഹാജർ എണ്ണം നേരിട്ട് മാറ്റാവുന്നതാണ്.</p>
+        <div class="edit-header">
+            <h3 style="margin:0; color:#0b5ed7; font-size: 1rem;">പേരുകളും ഹാജറും എഡിറ്റ്‌ ചെയ്യാം</h3>
+            <button class="back-menu-btn" onclick="closeEditModal()">🔙 ബാക്ക് / മെനു</button>
+        </div>
+        <p style="font-size: 0.75rem; color: #666; margin-top: 5px;">നാമത്തിന് ശേഷം കാണുന്ന ബോക്സിൽ കുട്ടിയുടെ ആകെ ഹാജർ എണ്ണം നേരിട്ട് മാറ്റാവുന്നതാണ്.</p>
         
         <div class="add-input-box">
             <input type="text" id="newStudentName" placeholder="പുതിയ കുട്ടിയുടെ പേര് എഴുതുക...">
@@ -314,7 +334,6 @@
         localStorage.setItem('madrassa_attendance_rank_v2', JSON.stringify(students));
     }
 
-    // നിലവിലെ സമയം (HH:MM format) എടുക്കാൻ
     function getCurrentTimeString() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -361,13 +380,12 @@
 
         if (student.status === "none" || !student.status) {
             student.status = "present";
-            // മുമ്പ് ഹാജർ ആകുമ്പോൾ 6:40 എന്ന് മാത്രം വരുന്നത് മാറ്റി, നിലവിലെ ടൈം നൽകുന്നു (മാറ്റണമെങ്കിൽ യൂസറിന് ടൈം ബോക്സിൽ മാറ്റാം)
             student.time = getCurrentTimeString(); 
-            student.totalAttendance = (student.totalAttendance || 0) + 1; // ഹാജർ കൂട്ടി ചേർക്കുന്നു
+            student.totalAttendance = (student.totalAttendance || 0) + 1;
         } else if (student.status === "present") {
             student.status = "absent";
             student.time = "";
-            student.totalAttendance = Math.max(0, (student.totalAttendance || 1) - 1); // അബ്സെന്റ് ആക്കിയാൽ കുറയ്ക്കുന്നു
+            student.totalAttendance = Math.max(0, (student.totalAttendance || 1) - 1);
         } else {
             student.status = "none";
             student.time = "";
@@ -517,9 +535,7 @@
         }
     }
 
-    // ആകെ ഹാജർ (Total Attendance) അടിസ്ഥാനമാക്കി Top 3 കണ്ടെത്തുന്നു
     function generateMonthlyRank() {
-        // കുട്ടികളെ ആകെ ഹാജറിന്റെ അടിസ്ഥാനത്തിൽ സോർട്ട് ചെയ്യുന്നു
         let sortedStudents = [...students].sort((a, b) => (b.totalAttendance || 0) - (a.totalAttendance || 0));
 
         let report = `🏆 *പോറോപ്പാട് ബദ്‌റുൽഹുദ മദ്റസ*\n*മാസ ഹാജർ റാങ്ക് ലിസ്റ്റ്* 🌟\n\n`;
