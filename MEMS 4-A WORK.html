@@ -37,15 +37,14 @@
             display: flex;
             gap: 8px;
             margin-bottom: 10px;
-            align-items: center;
         }
         .edit-list-btn {
             flex: 2;
             background-color: #495057;
             color: white;
             border: none;
-            padding: 9px;
-            font-size: 0.8rem;
+            padding: 10px;
+            font-size: 0.85rem;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
@@ -56,33 +55,18 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 4px;
+            gap: 5px;
             font-size: 0.8rem;
             font-weight: bold;
             color: #0b5ed7;
         }
         .lesson-control input {
-            width: 35px;
+            width: 50px;
             padding: 5px;
             text-align: center;
             font-weight: bold;
             border: 1px solid #0b5ed7;
             border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        .lesson-btn {
-            background-color: #0b5ed7;
-            color: white;
-            border: none;
-            width: 28px;
-            height: 28px;
-            font-weight: bold;
-            font-size: 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .subject-bar {
             display: flex;
@@ -131,29 +115,35 @@
             top: 0;
             z-index: 2;
         }
-        
-        /* കുട്ടികളുടെ പേര് നിൽക്കുന്ന കോളം ഫിക്സ് ചെയ്ത് നിർത്താൻ */
-        th.name-col, td.name-col {
+        th:first-child, td:first-child {
             text-align: left;
             position: sticky;
             left: 0;
             background-color: #f8f9fa;
-            z-index: 5;
+            z-index: 3;
             min-width: 200px;
-            max-width: 200px;
-            width: 200px;
             white-space: normal;
-            border-right: 2px solid #0b5ed7;
         }
-        th.name-col {
+        th:first-child {
             background-color: #0b5ed7;
-            z-index: 6;
+            z-index: 4;
             color: white;
         }
         
-        /* ഓരോ പാഠത്തിനും ഇടയിൽ വ്യക്തമായ കളർ ലൈൻ നൽകാൻ */
-        .lesson-divider {
-            border-right: 3px solid #ff9800 !important;
+        /* റോ ഹൈലൈറ്റ് ചെയ്യാനുള്ള സ്റ്റൈൽ */
+        tr.highlighted-row td {
+            background-color: #e2f0d9 !important;
+        }
+        tr.highlighted-row td:first-child {
+            background-color: #d4edbc !important;
+        }
+
+        .summary-cell {
+            text-align: left;
+            font-size: 0.75rem;
+            color: #444;
+            min-width: 200px;
+            white-space: normal !important;
         }
 
         input[type="checkbox"] {
@@ -194,11 +184,11 @@
             background: #f9fff9;
         }
 
-        /* Modal Styles for Editing Students */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
-            z-index: 100;
+            z-index: 10;
             left: 0;
             top: 0;
             width: 100%;
@@ -287,25 +277,20 @@
     <h2>MEMS TRIKARPUR - 4A</h2>
     <p class="sub">വർക്ക് ട്രാക്കർ</p>
 
-    <!-- ടോപ്പ് ബാർ: എഡിറ്റ് ബട്ടണും പാഠങ്ങളുടെ എണ്ണം കൂട്ടാനും കുറയ്ക്കാനുമുള്ള ബട്ടണുകൾ -->
     <div class="top-action-bar">
         <button class="edit-list-btn" onclick="openModal()">✏️ കുട്ടികളുടെ ലിസ്റ്റ് എഡിറ്റ്</button>
         <div class="lesson-control">
             <label for="totalLessons">പാഠങ്ങൾ:</label>
-            <button class="lesson-btn" onclick="adjustLessons(-1)">-</button>
-            <input type="number" id="totalLessons" min="1" max="30" value="12" oninput="updateLessonCount()">
-            <button class="lesson-btn" onclick="adjustLessons(1)">+</button>
+            <input type="number" id="totalLessons" min="1" max="30" value="12" onchange="updateLessonCount()">
         </div>
     </div>
 
-    <!-- വിഷയങ്ങൾ മാറ്റാനുള്ള ബട്ടണുകൾ -->
     <div class="subject-bar">
         <button class="sub-btn active" id="btnUloom" onclick="changeSubject('ULOOM WORK')">ULOOM</button>
         <button class="sub-btn" id="btnFiqh" onclick="changeSubject('FIQH WORK')">FIQH</button>
         <button class="sub-btn" id="btnThajveed" onclick="changeSubject('THAJVEED WORK')">THAJVEED</button>
     </div>
 
-    <!-- മുഴുവൻ പാഠങ്ങളും അടങ്ങിയ ടേബിൾ -->
     <div class="table-container">
         <table id="workTable">
             <thead id="tableHead">
@@ -325,7 +310,7 @@
     <textarea id="outputBox" placeholder="റിപ്പോർട്ട് ഇവിടെ വരുമ്പോൾ കോപ്പി ചെയ്യാം..." readonly></textarea>
 </div>
 
-<!-- മോഡൽ: കുട്ടികളുടെ ലിസ്റ്റ് എഡിറ്റ് ചെയ്യാൻ -->
+<!-- Modal -->
 <div id="studentModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">കുട്ടികളുടെ പേരുകൾ മാറ്റുക / പുതിയത് ചേർക്കുക</div>
@@ -375,21 +360,11 @@
         loadTable();
     }
 
-    function adjustLessons(amount) {
-        let input = document.getElementById('totalLessons');
-        let val = parseInt(input.value) || 12;
-        val += amount;
-        if(val < 1) val = 1;
-        if(val > 30) val = 30;
-        input.value = val;
-        updateLessonCount();
-    }
-
     function updateLessonCount() {
         let val = parseInt(document.getElementById('totalLessons').value);
-        if(isNaN(val)) return;
         if(val < 1) val = 1;
         if(val > 30) val = 30;
+        document.getElementById('totalLessons').value = val;
         subjectLessons[currentSubject] = val;
         localStorage.setItem('mems_4a_lessons', JSON.stringify(subjectLessons));
         loadTable();
@@ -402,13 +377,11 @@
 
         let totalL = subjectLessons[currentSubject] || 12;
 
-        // 헤ഡർ തയാറാക്കൽ
-        let headHTML = `<tr><th class="name-col">കുട്ടികളുടെ പേര്</th>`;
+        let headHTML = `<tr><th>കുട്ടികളുടെ പേര്</th>`;
         for (let l = 1; l <= totalL; l++) {
-            let dividerClass = (l < totalL) ? "lesson-divider" : "";
-            headHTML += `<th class="${dividerClass}">${l}</th>`;
+            headHTML += `<th>${l}</th>`;
         }
-        headHTML += `</tr>`;
+        headHTML += `<th>സ്റ്റാറ്റസ് വിവരണം</th></tr>`;
         document.getElementById("tableHead").innerHTML = headHTML;
 
         const tbody = document.getElementById("tableBody");
@@ -419,17 +392,69 @@
                 appData[currentSubject][studentIndex] = {};
             }
 
-            let rowHTML = `<tr><td class="name-col">${studentIndex + 1}. ${name}</td>`;
+            // റോ നിർമ്മിക്കുന്നു (ക്ലിക്ക് ചെയ്താൽ ഹൈലൈറ്റ് ആവാൻ onclick നൽകിയിരിക്കുന്നു)
+            let row = document.createElement('tr');
+            row.id = `row_${studentIndex}`;
+            row.onclick = function(e) {
+                if(e.target.tagName !== 'INPUT') {
+                    toggleRowHighlight(studentIndex);
+                }
+            };
+
+            let nameCell = document.createElement('td');
+            nameCell.innerHTML = `${studentIndex + 1}. ${name}`;
+            row.appendChild(nameCell);
             
             for (let lesson = 1; lesson <= totalL; lesson++) {
+                let cell = document.createElement('td');
                 const isChecked = appData[currentSubject][studentIndex][lesson] ? "checked" : "";
-                let dividerClass = (lesson < totalL) ? "lesson-divider" : "";
-                rowHTML += `<td class="${dividerClass}"><input type="checkbox" ${isChecked} onchange="saveCheck(${studentIndex}, ${lesson}, this.checked)"></td>`;
+                let checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                if(isChecked) checkbox.checked = true;
+                
+                checkbox.onchange = (function(sIdx, lNum) {
+                    return function() {
+                        saveCheck(sIdx, lNum, this.checked);
+                    };
+                })(studentIndex, lesson);
+
+                cell.appendChild(checkbox);
+                row.appendChild(cell);
             }
             
-            rowHTML += `</tr>`;
-            tbody.innerHTML += rowHTML;
+            // സ്റ്റാറ്റസ് വിവരണം കോളം
+            let summaryCell = document.createElement('td');
+            summaryCell.className = 'summary-cell';
+            summaryCell.id = `summary_${studentIndex}`;
+            summaryCell.innerHTML = getStudentSummaryText(studentIndex, totalL);
+            row.appendChild(summaryCell);
+
+            tbody.appendChild(row);
         });
+    }
+
+    // റോ ഹൈലൈറ്റ് ടോഗുൾ ചെയ്യാനുള്ള ഫങ്ഷൻ
+    function toggleRowHighlight(studentIndex) {
+        let row = document.getElementById(`row_${studentIndex}`);
+        if(row) {
+            row.classList.toggle('highlighted-row');
+        }
+    }
+
+    function getStudentSummaryText(studentIndex, totalL) {
+        let completed = [];
+        let pending = [];
+        for (let l = 1; l <= totalL; l++) {
+            if (appData[currentSubject]?.[studentIndex]?.[l]) {
+                completed.push(l);
+            } else {
+                pending.push(l);
+            }
+        }
+        
+        let compStr = completed.length > 0 ? `<b>ചെയ്തത്:</b> ${completed.join(', ')}` : `<b>ചെയ്തത്:</b> ഒന്നുമില്ല`;
+        let pendStr = pending.length > 0 ? ` | <b>ബാക്കി:</b> ${pending.length} എണ്ണം` : ` | <b>എല്ലാം പൂർത്തിയായി!</b>`;
+        return `${compStr}<br>${pendStr}`;
     }
 
     function saveCheck(studentIndex, lesson, isChecked) {
@@ -438,6 +463,13 @@
 
         appData[currentSubject][studentIndex][lesson] = isChecked;
         localStorage.setItem('mems_4a_master_data', JSON.stringify(appData));
+
+        // തത്സമയം സ്റ്റാറ്റസ് ബോക്സ് അപ്ഡേറ്റ് ചെയ്യാൻ
+        let totalL = subjectLessons[currentSubject] || 12;
+        let summaryEl = document.getElementById(`summary_${studentIndex}`);
+        if(summaryEl) {
+            summaryEl.innerHTML = getStudentSummaryText(studentIndex, totalL);
+        }
     }
 
     function resetSubject() {
@@ -478,7 +510,6 @@
         }
     }
 
-    // Modal Functions for Student Management
     function openModal() {
         renderModalList();
         document.getElementById('studentModal').style.display = 'block';
@@ -512,7 +543,7 @@
 
     function addStudent() {
         const input = document.getElementById('newStudentName');
-        const name = input.value.tdrim ? input.value.trim() : input.value.trim();
+        const name = input.value.trim();
         if(name !== "") {
             memsStudents4A.push(name);
             localStorage.setItem('mems_4a_students', JSON.stringify(memsStudents4A));
